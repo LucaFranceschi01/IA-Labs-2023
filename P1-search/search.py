@@ -89,17 +89,20 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     expanded_nodes = util.Stack()
     frontier = util.Stack()
-    frontier.push({problem.getStartState()})
+    frontier.push((problem.getStartState(), [])) # frontier is a stack of states and actions that ended up in that state
     while True:
-        if frontier == {}:
-            return -1
+        if frontier.isEmpty():
+            return frontier.list
         n = frontier.pop()
         expanded_nodes.push(n)
+        print(n)
+        print(expanded_nodes.list)
+        print('-------')
         if problem.isGoalState(n):
             return n
-        for m in problem.getSuccessors(n):
-            if m not in frontier and m not  in expanded_nodes:
-                frontier.push(m)
+        for (next_state, action, _) in problem.getSuccessors(n[0]):
+            if (next_state, action) not in frontier.list and (next_state, action) not in expanded_nodes.list:
+                frontier.push((next_state, action)) # solo con action peta
            
             
 def breadthFirstSearch(problem):
