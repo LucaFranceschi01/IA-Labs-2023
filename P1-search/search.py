@@ -87,8 +87,8 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = Stack()
-    frontier = Stack()
+    expanded_nodes = util.Stack()
+    frontier = util.Stack()
     frontier.push({problem.getStartState()})
     while True:
         if frontier == {}:
