@@ -87,22 +87,19 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = util.Stack()
+    expanded_nodes = []
     frontier = util.Stack()
     frontier.push((problem.getStartState(), [])) # frontier is a stack of states and actions that ended up in that state
     while True:
         if frontier.isEmpty():
-            return frontier.list
-        n = frontier.pop()
-        expanded_nodes.push(n)
-        print(n)
-        print(expanded_nodes.list)
-        print('-------')
-        if problem.isGoalState(n):
-            return n
-        for (next_state, action, _) in problem.getSuccessors(n[0]):
-            if (next_state, action) not in frontier.list and (next_state, action) not in expanded_nodes.list:
-                frontier.push((next_state, action)) # solo con action peta
+            return -1
+        state, path = frontier.pop()
+        expanded_nodes.append(state)
+        if problem.isGoalState(state):
+            return path
+        for (next_state, action, _) in problem.getSuccessors(state):
+            if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
+                frontier.push((next_state, path+[action]))
            
             
 def breadthFirstSearch(problem):
