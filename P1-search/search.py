@@ -87,25 +87,46 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = []
-    frontier = util.Stack()
-    frontier.push((problem.getStartState(), [])) # frontier is a stack of states and actions that ended up in that state
+    expanded_nodes = [] #Initialise expande nodes
+    #Initialise frontier with the initial state
+    #Frontier is a stack (LIFO) of states and actions that ended up in that state
+    frontier = util.Stack() 
+    frontier.push((problem.getStartState(), [])) 
     while True:
         if frontier.isEmpty():
-            return -1
-        state, path = frontier.pop()
-        expanded_nodes.append(state)
+            return -1 #Return failure
+        state, path = frontier.pop() #Pop most recently added node (states and actions)
+        expanded_nodes.append(state) #Add node to expanded nodes
+        
         if problem.isGoalState(state):
-            return path
-        for (next_state, action, _) in problem.getSuccessors(state):
+            return path #Return solution
+        
+        for (next_state, action, _) in problem.getSuccessors(state): 
             if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
-                frontier.push((next_state, path+[action]))
-           
+                frontier.push((next_state, path + [action])) #Push node to the top of the frontier stack
+
             
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    expanded_nodes = [] #Initialise expande nodes
+    #Initialise frontier with the initial state
+    #Frontier is a queue (FIFO) of states and actions that ended up in that state
+    frontier = util.Queue() 
+    frontier.push((problem.getStartState(), [])) 
+    while True:
+        if frontier.isEmpty():
+            return -1 #Return failure
+        state, path = frontier.pop() #Pop most recently added node (states and actions)
+        expanded_nodes.append(state) #Add node to expanded nodes
+        
+        if problem.isGoalState(state):
+            return path #Return solution
+        
+        for (next_state, action, _) in problem.getSuccessors(state): 
+            if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
+                frontier.push((next_state, path + [action])) #Push node to the top of the frontier stack
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
