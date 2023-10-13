@@ -133,29 +133,38 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
     expanded_nodes = []
     frontier = util.PriorityQueue()
-    frontier.push((problem.getStartState(), []), 0) 
-
-
+    frontier.push((problem.getStartState(), []), 0)
+    
     while True:
         if frontier.isEmpty():
-            return -1 
-        state, path = frontier.pop() #Pop most recently added node (states and actions)
-        
+            return -1
+
+        cost = frontier.heap[0][0]
+        state, path = frontier.pop()
+
         if problem.isGoalState(state):
-            return path #Return solution
-        
-        expanded_nodes.append(state) #Add node to expanded nodes
-        
-        for (next_state, action, next_cost) in problem.getSuccessors(state): 
-            if (next_state, action) not in frontier and next_state not in expanded_nodes:
-                frontier.push((next_state, path + [action]), next_cost) #Push node to the top of the frontier stack
+            print(path)
+            return path
 
-            elif (next_state, action) in frontier:
-                frontier.update((next_state, action), next_cost)
+        expanded_nodes.append((state, path))
 
+        for next_state, next_action, step_cost in problem.getSuccessors(state):
+            in_frontier = False
+            in_expanded = False
+            idx = 0
+            for i in range(len(frontier.heap)):
+                if frontier.heap[i][2][0] == next_state:
+                    in_frontier = True
+                    idx = i
+            for i in range(len(expanded_nodes)):
+                if expanded_nodes[i][0] == next_state:
+                    in_expanded = True
 
-
-    
+            if not in_frontier and not in_expanded:
+                frontier.push((next_state, path+[next_action]), cost+step_cost)
+            elif in_frontier and frontier.heap[idx][0] > cost+step_cost:
+                frontier.heap.remove(frontier[idx])
+                frontier.push((next_state, path+[next_action]), cost+step_cost)
 
 def nullHeuristic(state, problem=None):
     """
