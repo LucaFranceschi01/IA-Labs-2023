@@ -113,10 +113,12 @@ def breadthFirstSearch(problem):
     #Initialise frontier with the initial state
     #Frontier is a queue (FIFO) of states and actions that ended up in that state
     frontier = util.Queue() 
-    frontier.push((problem.getStartState(), [])) 
+    frontier.push((problem.getStartState(), []))
+    
     while True:
         if frontier.isEmpty():
             return -1 #Return failure
+        
         state, path = frontier.pop() #Pop most recently added node (states and actions)
         expanded_nodes.append(state) #Add node to expanded nodes
         
@@ -139,32 +141,35 @@ def uniformCostSearch(problem):
         if frontier.isEmpty():
             return -1
 
-        cost = frontier.heap[0][0]
+        cost = frontier.heap[0][0] # Minimum cost in frontier
         state, path = frontier.pop()
 
         if problem.isGoalState(state):
-            print(path)
+            # print(path)
             return path
 
         expanded_nodes.append((state, path))
 
         for next_state, next_action, step_cost in problem.getSuccessors(state):
+            
+            # Flag variables for searching into frontier and extended_nodes
             in_frontier = False
             in_expanded = False
             idx = 0
-            for i in range(len(frontier.heap)):
+            
+            for i in range(len(frontier.heap)): # Search if next state is in frontier
                 if frontier.heap[i][2][0] == next_state:
                     in_frontier = True
-                    idx = i
-            for i in range(len(expanded_nodes)):
+                    idx = i # Index of already found state
+            for i in range(len(expanded_nodes)): # Search if next state is in expanded_nodes
                 if expanded_nodes[i][0] == next_state:
                     in_expanded = True
 
             if not in_frontier and not in_expanded:
-                frontier.push((next_state, path+[next_action]), cost+step_cost)
+                frontier.push((next_state, path+[next_action]), cost+step_cost) # Add child state to frontier
             elif in_frontier and frontier.heap[idx][0] > cost+step_cost:
                 frontier.heap.remove(frontier[idx])
-                frontier.push((next_state, path+[next_action]), cost+step_cost)
+                frontier.push((next_state, path+[next_action]), cost+step_cost) # Modify path and cost of state if found a better path to it
 
 def nullHeuristic(state, problem=None):
     """
