@@ -72,6 +72,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,14 +88,15 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expande nodes
+    expanded_nodes = [] #Initialise expanded nodes
     #Initialise frontier with the initial state
-    #Frontier is a stack (LIFO) of states and actions that ended up in that state
     frontier = util.Stack() 
-    frontier.push((problem.getStartState(), [])) 
+    frontier.push((problem.getStartState(), [])) #Frontier is a stack (LIFO) of states and actions that ended up in that state
+
     while True:
         if frontier.isEmpty():
             return -1 #Return failure
+        
         state, path = frontier.pop() #Pop most recently added node (states and actions)
         expanded_nodes.append(state) #Add node to expanded nodes
         
@@ -109,17 +111,16 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expande nodes
+    expanded_nodes = [] #Initialise expanded nodes
     #Initialise frontier with the initial state
-    #Frontier is a queue (FIFO) of states and actions that ended up in that state
     frontier = util.Queue() 
-    frontier.push((problem.getStartState(), []))
+    frontier.push((problem.getStartState(), [])) #Frontier is a queue (FIFO) of states and actions that ended up in that state
     
     while True:
         if frontier.isEmpty():
             return -1 #Return failure
         
-        state, path = frontier.pop() #Pop most recently added node (states and actions)
+        state, path = frontier.pop() #Pop node (states and actions) that was added to the queue first 
         expanded_nodes.append(state) #Add node to expanded nodes
         
         if problem.isGoalState(state):
@@ -127,49 +128,51 @@ def breadthFirstSearch(problem):
         
         for (next_state, action, _) in problem.getSuccessors(state): 
             if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
-                frontier.push((next_state, path + [action])) #Push node to the top of the frontier stack
+                frontier.push((next_state, path + [action])) #Enqueue node to the end of the frontier queue
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = []
+    expanded_nodes = [] #Initialise expanded nodes
+    #Frontier is a priority queue (FIFO) of states and actions where the node with the lowest priority is the head of the queue 
     frontier = util.PriorityQueue()
-    frontier.push((problem.getStartState(), []), 0)
+    frontier.push((problem.getStartState(), []), 0) #Initialise frontier with the initial state and a cost equal to 0
     
     while True:
         if frontier.isEmpty():
-            return -1
+            return -1 #Return failure
 
-        cost = frontier.heap[0][0] # Minimum cost in frontier
-        state, path = frontier.pop()
+        cost = frontier.heap[0][0] #??? #Minimum cost in frontier
+        state, path = frontier.pop() #Pop node (states, actions. costs) with lowest cost 
 
         if problem.isGoalState(state):
-            # print(path)
-            return path
+            return path #Return solution
 
-        expanded_nodes.append((state, path))
+        expanded_nodes.append((state, path)) #Add node to expanded nodes
 
         for next_state, next_action, step_cost in problem.getSuccessors(state):
-            
             # Flag variables for searching into frontier and extended_nodes
             in_frontier = False
             in_expanded = False
             idx = 0
             
             for i in range(len(frontier.heap)): # Search if next state is in frontier
-                if frontier.heap[i][2][0] == next_state:
+                if frontier.heap[i][2][0] == next_state: ##??? [i][2][0]
                     in_frontier = True
-                    idx = i # Index of already found state
+                    idx = i #??? #Index of already found state
             for i in range(len(expanded_nodes)): # Search if next state is in expanded_nodes
-                if expanded_nodes[i][0] == next_state:
+                if expanded_nodes[i][0] == next_state: ##??? [i][0]
                     in_expanded = True
 
+            #If the child state is not in frontier and not in the expanded node we add it to the frontier
             if not in_frontier and not in_expanded:
-                frontier.push((next_state, path+[next_action]), cost+step_cost) # Add child state to frontier
-            elif in_frontier and frontier.heap[idx][0] > cost+step_cost:
-                frontier.heap.remove(frontier[idx])
-                frontier.push((next_state, path+[next_action]), cost+step_cost) # Modify path and cost of state if found a better path to it
+                frontier.push((next_state, path + [next_action]), cost + step_cost) # Add child state, path and cost to frontier
+            #Else if the child state is in the frontier and has a higher path-cost we replace the frontier node with the child
+            elif in_frontier and frontier.heap[idx][0] > cost + step_cost:
+                frontier.heap.remove(frontier[idx]) #Remove frontier
+                frontier.push((next_state, path + [next_action]), cost + step_cost) #Modify path and cost of state if found a better path to it
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -177,6 +180,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
