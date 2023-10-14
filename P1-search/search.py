@@ -173,7 +173,7 @@ def uniformCostSearch(problem):
                     frontier.push((next_state, path + [next_action]), cost + step_cost) # Add child state, path and cost to frontier
                 #Else if the child state is in the frontier and has a higher path-cost we replace the frontier node with the child
                 elif in_frontier and frontier.heap[idx][0] > cost + step_cost:
-                    frontier.heap.remove(frontier[idx]) #Remove frontier
+                    frontier.heap.remove(frontier.heap[idx]) #Remove frontier
                     frontier.push((next_state, path + [next_action]), cost + step_cost) #Modify path and cost of state if found a better path to it
 
 
