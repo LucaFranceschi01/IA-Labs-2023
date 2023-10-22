@@ -171,7 +171,7 @@ def uniformCostSearch(problem):
         if problem.isGoalState(state):
             return path
 
-        if not in_expanded(state, expanded_nodes):
+        if state not in expanded_nodes:
             expanded_nodes.append((state, path))
 
             for next_state, next_action, step_cost in problem.getSuccessors(state):
