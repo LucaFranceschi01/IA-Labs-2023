@@ -90,7 +90,7 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expanded nodes
+    expanded_nodes = [] 
     #Initialise frontier with the initial state
     frontier = util.Stack() 
     frontier.push((problem.getStartState(), [])) #Frontier is a stack (LIFO) of states and actions that ended up in that state
@@ -114,7 +114,7 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expanded nodes
+    expanded_nodes = [] 
     #Initialise frontier with the initial state
     frontier = util.Queue() 
     frontier.push((problem.getStartState(), [])) #Frontier is a queue (FIFO) of states and actions that ended up in that state
@@ -147,7 +147,6 @@ def idx_in_frontier(state, frontier):
     '''Returns IDX of state inside frontier if is in it. Otherwise return FAILURE'''
     for i in range(len(frontier.heap)):
         if frontier.heap[i][2][0] == state: 
-            'What is each [][][] in the heap?'
             return i
     return FAILURE
 
@@ -155,7 +154,7 @@ def idx_in_frontier(state, frontier):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expanded nodes
+    expanded_nodes = [] 
     #Initialise frontier with the initial state
     frontier = util.PriorityQueue() #Frontier is a priority queue of nodes: states, actions and path-costs, that ended up in that state
     frontier.push((problem.getStartState(), []), 0)
@@ -199,7 +198,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] #Initialise expanded nodes
+    expanded_nodes = [] 
     #Initialise frontier with the initial state
     frontier = util.PriorityQueue() #Frontier is a priority queue of nodes: states, actions and path-costs, that ended up in that state
     frontier.push((problem.getStartState(), []), 0+heuristic(problem.getStartState(), problem))
@@ -225,10 +224,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 next_state_in_expanded = in_expanded(next_state, expanded_nodes)
                 idx = idx_in_frontier(next_state, frontier)
                         
-                next_cost = cost + step_cost - heuristic(state, problem) + heuristic(next_state, problem) # HEURISTICS DO NOT ADD UP
+                next_cost = cost + step_cost - heuristic(state, problem) + heuristic(next_state, problem) #Heuristics do not add up
                 # g(n): cost + step_cost -- that is cost from start to n
                 # h(n): heuristic(next_state, problem) -- cost from n to goal
-                'Comment on why we delete the first heuristic'
 
                 # If the child state is not in frontier and not in the expanded node we add it to the frontier
                 if idx == FAILURE and not next_state_in_expanded:
