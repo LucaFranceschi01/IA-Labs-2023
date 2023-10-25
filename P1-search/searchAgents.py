@@ -295,14 +295,19 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #For the state space we only reference the starting Pacman position and the location of the four corners
+        return (self.startingPosition, self.corners)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        is_goal_state = False
+        if state[1] == self.corners: #If the search state is equal to the goal state return True otherwise False
+            is_goal_state = True 
+
+        return is_goal_state  
 
     def getSuccessors(self, state):
         """
