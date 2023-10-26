@@ -266,6 +266,13 @@ def euclideanHeuristic(position, problem, info={}):
 # This portion is incomplete.  Time to write code!  #
 #####################################################
 
+def searchTuple(tuple, element):
+    '''Returns index of element in tuple or returns -1'''
+    for i in range(len(tuple)):
+        if tuple[i] == element:
+            return i
+    return -1
+
 class CornersProblem(search.SearchProblem):
     """
     This search problem finds paths through all four corners of a layout.
@@ -288,6 +295,11 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.startingVisitedCorners = [False] * len(self.corners)
+
+        idx = searchTuple(self.corners, self.startingPosition)
+        if idx != -1: self.startingVisitedCorners[idx] = True
+            
 
     def getStartState(self):
         """
@@ -296,17 +308,21 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         #For the state space we only reference the starting Pacman position and the location of the four corners
-        # return (self.startingPosition, self.corners)
-        return self.startingPosition
+        # return (self.startingPosition, [], 0)
+        return ((self.startingPosition, self.startingVisitedCorners))
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        # print(state)
-        # print(self.corners)
-        if state[0] in self.corners: #If the search state is equal to the goal state return True otherwise False
+        # print(state[1])
+        # idx = searchTuple(self.corners, state[0])
+        # if idx != -1 and self.visitedCorners[idx] == False:
+        #     self.visitedCorners[idx] == True
+        print('---',state)
+        print(state[1])
+        if state[1] == [True] * len(self.startingVisitedCorners):
             return True
         return False
 
@@ -331,8 +347,21 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            position, visitedCorners = state
+            x, y = position
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                nextPosition = (nextx, nexty)
+
+                idx = searchTuple(self.corners, position)
+                if idx != -1 and visitedCorners[idx] == False:
+                    visitedCorners[idx] = True
+
+                successors.append(((nextPosition, visitedCorners), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
+        print(successors)
         return successors
 
     def getCostOfActions(self, actions):
