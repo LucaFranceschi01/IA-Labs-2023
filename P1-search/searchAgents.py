@@ -316,13 +316,8 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        # print(state[1])
-        # idx = searchTuple(self.corners, state[0])
-        # if idx != -1 and self.visitedCorners[idx] == False:
-        #     self.visitedCorners[idx] == True
-        print('---',state)
-        print(state[1])
-        if state[1] == [True] * len(self.startingVisitedCorners):
+        
+        if sum(state[1]) == len(self.startingVisitedCorners):
             return True
         return False
 
@@ -347,7 +342,9 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            position, visitedCorners = state
+            position = state[0]
+            visitedCorners = state[1][:]
+            # position, visitedCorners = state
             x, y = position
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -361,7 +358,6 @@ class CornersProblem(search.SearchProblem):
                 successors.append(((nextPosition, visitedCorners), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
-        print(successors)
         return successors
 
     def getCostOfActions(self, actions):
