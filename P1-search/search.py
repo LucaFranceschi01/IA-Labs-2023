@@ -118,20 +118,22 @@ def breadthFirstSearch(problem):
     #Initialise frontier with the initial state
     frontier = util.Queue() 
     frontier.push((problem.getStartState(), [], 0)) #Frontier is a queue (FIFO) of states and actions that ended up in that state
-    
+
     while True:
         if frontier.isEmpty():
             return FAILURE
-        
+
         state, path, cost = frontier.pop() #Pop node (states and actions) that was added to the queue first
+        
         if problem.isGoalState(state):
             return path #Return solution
-        
+
         if state not in expanded_nodes:
             expanded_nodes.append(state) #Add node to expanded nodes
-            for (next_state, action, c) in problem.getSuccessors(state): 
-                if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
-                    frontier.push((next_state, path + [action], cost+c)) #Enqueue node to the end of the frontier queue
+            successors = problem.getSuccessors(state)
+            for (next_state, action, step_cost) in successors: 
+                if (next_state, action, step_cost) not in frontier.list and next_state not in expanded_nodes:
+                    frontier.push((next_state, path + [action], cost+step_cost)) #Enqueue node to the end of the frontier queue
 
 
 def in_expanded(state, expanded_nodes):
