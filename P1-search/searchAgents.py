@@ -295,10 +295,10 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        self.startingVisitedCorners = [False] * len(self.corners)
+        self.startingVisitedCorners = [False] * len(self.corners) #Initialise a list of 4 False boolean, each will correspond to a corner
 
-        idx = searchTuple(self.corners, self.startingPosition)
-        if idx != -1: self.startingVisitedCorners[idx] = True
+        idx = searchTuple(self.corners, self.startingPosition) #Call previously created function to get the index of the list if it's a corner
+        if idx != -1: self.startingVisitedCorners[idx] = True #Set the boolean value of the list to true if we are in a corner
             
 
     def getStartState(self):
@@ -307,7 +307,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        #For the state space we only reference the starting Pacman position and the location of the four corners
+        #For the state space we only reference the starting Pacman position and the boolean value of the four corners
         # return (self.startingPosition, [], 0)
         return ((self.startingPosition, self.startingVisitedCorners))
 
@@ -347,9 +347,10 @@ class CornersProblem(search.SearchProblem):
                 nextPosition = (nextx, nexty)
                 idx = searchTuple(self.corners, nextPosition)
                 if idx != -1:
-                    visitedCorners[idx] = True
+                    visitedCorners[idx] = True #Set the boolean value of the list to true if we are in a corner
 
                 successors.append(((nextPosition, visitedCorners), action, 1))
+                print(successors)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -385,7 +386,24 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    shortest_distance = 0
+    h = 0
+
+    for corner in corners:
+        manhattan_distance = manhattanHeuristic(state, corner) #Cost of shortest path between the current position and the goal state
+        shortest_distance = min(manhattan_distance, shortest_distance)
+    
+    #The heuristic is the estimated cost of the cheapest path from n to the goal
+    h = shortest_distance
+
+    # An heuristic h is admissible if h(s)<=h*(s)
+    # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouting vertex to the goal 
+    # plus the cost of reaching that neighbour
+    # Consistency implies admissibility
+
+    return h 
+    #return 0 # Default to trivial solution
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
