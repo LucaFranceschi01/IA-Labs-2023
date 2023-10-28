@@ -388,16 +388,18 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     shortest_distance = 0
     h = 0
+    position = state[0]
+    #visitedCorners = state[1][:]
 
     for corner in corners:
-        manhattan_distance = manhattanHeuristic(state, corner) #Cost of shortest path between the current position and the goal state
+        manhattan_distance = manhattanHeuristic(position, corner) #Cost of shortest path between the current position and the goal state
         shortest_distance = min(manhattan_distance, shortest_distance)
     
     #The heuristic is the estimated cost of the cheapest path from n to the goal
     h = shortest_distance
 
     # An heuristic h is admissible if h(s)<=h*(s)
-    # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouting vertex to the goal 
+    # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouring vertex to the goal 
     # plus the cost of reaching that neighbour
     # Consistency implies admissibility
 
