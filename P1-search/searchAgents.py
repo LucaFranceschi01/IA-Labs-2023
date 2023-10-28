@@ -398,18 +398,31 @@ def cornersHeuristic(state, problem):
     # return dist
 
 
-    # 2 POINTS SOLUTION: idea from https://www.quora.com/How-can-I-design-a-heuristic-function-for-the-Pacman-corner-problem
+    # # 2 POINTS SOLUTION: idea from https://www.quora.com/How-can-I-design-a-heuristic-function-for-the-Pacman-corner-problem
+    # if problem.isGoalState(state):
+    #     return 0
+    # position = state[0]
+    # visitedCorners = state[1][:]
+    # dist_corners = [] # distance to unvisited corners --> corner positions can be removed but nice to debug
+    # for i in range(len(corners)):
+    #     if visitedCorners[i] == False:
+    #         dist_corners.append((corners[i], manhattan_distance(position, corners[i])))
+    # dist_corners = sorted(dist_corners, key=lambda x:x[1])
+    # return dist_corners[0][1]
+
+
+    # 3 POINTS SOLUTION: same but return maximum distance value to heuristic instead of min
     if problem.isGoalState(state):
         return 0
     position = state[0]
     visitedCorners = state[1][:]
-    dist_corners = [] # distance to unvisited corners
-    for i  in range(len(corners)):
+    dist_corners = []
+    for i in range(len(corners)):
         if visitedCorners[i] == False:
             dist_corners.append((corners[i], manhattan_distance(position, corners[i])))
-    dist_corners = sorted(dist_corners, key=lambda x:x[1])
+    dist_corners = sorted(dist_corners, key=lambda x:x[1], reverse=True)
     return dist_corners[0][1]
-        
+    
     # #The heuristic is the estimated cost of the cheapest path from n to the goal
     # # An heuristic h is admissible if h(s)<=h*(s)
     # # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouring vertex to the goal 
