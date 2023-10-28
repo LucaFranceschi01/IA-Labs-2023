@@ -350,7 +350,6 @@ class CornersProblem(search.SearchProblem):
                     visitedCorners[idx] = True #Set the boolean value of the list to true if we are in a corner
 
                 successors.append(((nextPosition, visitedCorners), action, 1))
-                print(successors)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -368,6 +367,8 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
+def manhattan_distance(pos1, pos2):
+    return abs(pos1[0]-pos2[0]) + abs(pos1[1]-pos2[1])
 
 def cornersHeuristic(state, problem):
     """
@@ -386,26 +387,34 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    shortest_distance = 0
-    h = 0
+    # return 0 # Default to trivial solution
+
+
+    # # 1 POINT SOLUTION
+    # dist = manhattan_distance(corners[3], corners[0]) # init as largest path in maze
+    # position = state[0]
+    # for corner in corners:
+    #     dist = min(dist, manhattan_distance(position, corner)) #Cost of shortest path between the current position and the goal state
+    # return dist
+
+
+    # 2 POINTS SOLUTION: idea from https://www.quora.com/How-can-I-design-a-heuristic-function-for-the-Pacman-corner-problem
+    if problem.isGoalState(state):
+        return 0
     position = state[0]
-    #visitedCorners = state[1][:]
-
-    for corner in corners:
-        manhattan_distance = manhattanHeuristic(position, corner) #Cost of shortest path between the current position and the goal state
-        shortest_distance = min(manhattan_distance, shortest_distance)
-    
-    #The heuristic is the estimated cost of the cheapest path from n to the goal
-    h = shortest_distance
-
-    # An heuristic h is admissible if h(s)<=h*(s)
-    # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouring vertex to the goal 
-    # plus the cost of reaching that neighbour
-    # Consistency implies admissibility
-
-    return h 
-    #return 0 # Default to trivial solution
-
+    visitedCorners = state[1][:]
+    dist_corners = [] # distance to unvisited corners
+    for i  in range(len(corners)):
+        if visitedCorners[i] == False:
+            dist_corners.append((corners[i], manhattan_distance(position, corners[i])))
+    dist_corners = sorted(dist_corners, key=lambda x:x[1])
+    return dist_corners[0][1]
+        
+    # #The heuristic is the estimated cost of the cheapest path from n to the goal
+    # # An heuristic h is admissible if h(s)<=h*(s)
+    # # An heuristic h is consistent if its estimate is less or equal to the estimated distance from any neighbouring vertex to the goal 
+    # # plus the cost of reaching that neighbour
+    # # Consistency implies admissibility
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
