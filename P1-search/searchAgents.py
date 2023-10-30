@@ -418,15 +418,15 @@ def cornersHeuristic(state, problem):
     
     position = state[0]
     visitedCorners = state[1][:]
-    dist_corners = [] #Distance to unvisited corners 
+    distCorner = [] #Distance to unvisited corners 
 
     for i in range(len(corners)):
         if visitedCorners[i] == False: #Unvisited corners
-            dist_corners.append((corners[i], manhattan_distance(position, corners[i]))) #Append the unvisited corners and the distance to them
-    dist_corners = sorted(dist_corners, key=lambda x:x[1], reverse=True) #Sort in descending order the distances 
+            distCorner.append((corners[i], manhattan_distance(position, corners[i]))) #Append the unvisited corners and the distance to them
+    distCorner = sorted(distCorner, key=lambda x:x[1], reverse=True) #Sort in descending order the distances 
     
     #Return maximum distance to reach corner
-    return dist_corners[0][1] 
+    return distCorner[0][1]
     
     # The heuristic is the estimated cost of the cheapest path from n to the goal
     # An heuristic h is admissible if h(s)<=h*(s)
@@ -530,17 +530,15 @@ def foodHeuristic(state, problem):
     if problem.isGoalState(state):
         return 0 #Distance = 0
     
-    foodPosition = foodGrid.asList()
-    #visitedFood = foodGrid #foodGrid -> Grid of either True or False
-    dist_foods = [] #Distance to unvisited corners 
+    foodPositions = foodGrid.asList()
+    distFood = [] #Distance to unvisited food 
 
-    for i in range(len(foodPosition)):
-        #if foodGrid[i] == False: #Unvisited foods
-            dist_foods.append((foodPosition[i], manhattan_distance(position, foodPosition[i]))) #Append the unvisited foods and the distance to them
-    dist_foods = sorted(dist_foods, key=lambda x:x[1], reverse=True) #Sort in descending order of the distances (x:x[1])
+    for i in range(len(foodPositions)):
+        distFood.append((foodPositions[i], manhattan_distance(position, foodPositions[i]))) #Append the unvisited foods and the distance to them
+    distFood = sorted(distFood, key=lambda x:x[1], reverse=True) #Sort in descending order of the distances (x:x[1])
    
     #Return maximum distance to reach food
-    return dist_foods[0][1] 
+    return distFood[0][1]
 
 
 class ClosestDotSearchAgent(SearchAgent):
