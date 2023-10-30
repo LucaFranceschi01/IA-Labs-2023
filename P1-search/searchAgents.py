@@ -528,16 +528,17 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
 
     if problem.isGoalState(state):
-        return 0
+        return 0 #Distance = 0
     
-    foodPositions = foodGrid.asList()
-    distFood = []
+    foodPositions = foodGrid.asList() #List of food coordinates
+    distFood = [] #Distance to unvisited corners
 
     for i in range(len(foodPositions)):
-        distFood.append((foodPositions[i], mazeDistance(position, foodPositions[i], problem.startingGameState)))
-    distFood = sorted(distFood, key=lambda x:x[1], reverse=True)
-   
-    return distFood[0][1]
+        distFood.append((foodPositions[i], mazeDistance(position, foodPositions[i], problem.startingGameState))) #Append the unvisited corners and the distance to them
+    distFood = sorted(distFood, key=lambda x:x[1], reverse=True) #Sort in descending order the distances 
+    
+    #Return maximum distance to reach corner
+    return distFood[0][1] 
 
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -569,7 +570,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return #######
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -605,7 +606,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #Goal state: Find a path to any food
+        return self.food[x][y] #Return food in Pacman's position
 
 def mazeDistance(point1, point2, gameState):
     """
