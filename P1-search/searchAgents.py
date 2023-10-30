@@ -528,16 +528,15 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
 
     if problem.isGoalState(state):
-        return 0 #Distance = 0
+        return 0
     
     foodPositions = foodGrid.asList()
-    distFood = [] #Distance to unvisited food 
+    distFood = []
 
     for i in range(len(foodPositions)):
-        distFood.append((foodPositions[i], manhattan_distance(position, foodPositions[i]))) #Append the unvisited foods and the distance to them
-    distFood = sorted(distFood, key=lambda x:x[1], reverse=True) #Sort in descending order of the distances (x:x[1])
+        distFood.append((foodPositions[i], mazeDistance(position, foodPositions[i], problem.startingGameState)))
+    distFood = sorted(distFood, key=lambda x:x[1], reverse=True)
    
-    #Return maximum distance to reach food
     return distFood[0][1]
 
 
