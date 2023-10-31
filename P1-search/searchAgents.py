@@ -557,6 +557,8 @@ class ClosestDotSearchAgent(SearchAgent):
         # BASICALLY AN IMPLEMENTATION OF BFS TO SEARCH FOR THE FIRST UNEATED FOOD
         # The comments will remark the differences
 
+		# We could also import bfs from search.py and it should be the same
+
         FAILURE = -1
     
         frontier = util.Queue()
