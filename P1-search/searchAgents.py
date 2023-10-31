@@ -555,23 +555,26 @@ class ClosestDotSearchAgent(SearchAgent):
         "*** YOUR CODE HERE ***"
 
         # BASICALLY AN IMPLEMENTATION OF BFS TO SEARCH FOR THE FIRST UNEATED FOOD
+        # The comments will remark the differences
 
         FAILURE = -1
-        expanded_nodes = []
+    
         frontier = util.Queue()
-        frontier.push((startPosition, [], 0)) #Frontier is a queue (FIFO) of states and actions that ended up in that state
+        frontier.push((startPosition, [], 0))
+
+        expanded_nodes = []
 
         while True:
             if frontier.isEmpty():
                 return FAILURE
 
-            state, path, cost = frontier.pop() #Pop node (states and actions) that was added to the queue first
+            state, path, cost = frontier.pop() 
 
-            if state in food.asList():
-                return path #Return solution
+            if state in food.asList(): # If the state shares position with a food, return solution
+                return path 
 
             if state not in expanded_nodes:
-                expanded_nodes.append(state) #Add node to expanded nodes
+                expanded_nodes.append(state) 
                 for (next_state, action, step_cost) in problem.getSuccessors(state): 
                     if (next_state, action, step_cost) not in frontier.list and next_state not in expanded_nodes:
                         frontier.push((next_state, path + [action], cost+step_cost))
@@ -610,8 +613,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        #Goal state: Find a path to any food
-        return self.food[x][y] #Return food in Pacman's position
+        #If there is food at Pacman's position, return True
+        return self.food[x][y] 
 
 def mazeDistance(point1, point2, gameState):
     """
