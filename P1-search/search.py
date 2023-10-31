@@ -90,61 +90,66 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] 
-    #Initialise frontier with the initial state
+    
+    # Initialize frontier as a stack (LIFO) and add initial state
     frontier = util.Stack() 
-    frontier.push((problem.getStartState(), [])) #Frontier is a stack (LIFO) of states and actions that ended up in that state
+    frontier.push((problem.getStartState(), [])) # Each element of frontier is a pair of (state, path to position from start)
+
+    expanded_nodes = []
 
     while True:
         if frontier.isEmpty():
             return FAILURE
-        
-        state, path = frontier.pop() #Pop most recently added node (states and actions)
-        
-        if problem.isGoalState(state):
-            return path #Return solution
-        
-        if state not in expanded_nodes:
-            expanded_nodes.append(state) #Add node to expanded nodes
-            for (next_state, action, _) in problem.getSuccessors(state): 
+
+        state, path = frontier.pop() # Pop most recently added pair
+
+        if problem.isGoalState(state): # If goal is reached, return solution
+            return path
+
+        if state not in expanded_nodes: # Check if already expanded
+            expanded_nodes.append(state) # Add node to expanded nodes so it's not expanded again
+            for (next_state, action, _) in problem.getSuccessors(state): # Iterate over successors, cost is not taken into account
                 if (next_state, action) not in frontier.list and next_state not in expanded_nodes:
-                    frontier.push((next_state, path + [action])) #Push node to the top of the frontier stack
+                    frontier.push((next_state, path + [action])) # Push successor into frontier
 
             
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = []
-    #Initialise frontier with the initial state
+
+    # Initialize frontier as a queue (FIFO) and add initial state
     frontier = util.Queue()
-    frontier.push((problem.getStartState(), [], 0)) #Frontier is a queue (FIFO) of states and actions that ended up in that state
+    frontier.push((problem.getStartState(), [], 0)) # Each element of frontier is a triplet of (state, path to position from start, cost of path)
+    # State is normally the current position of pacman or a pair of (position, visited corners)
+
+    expanded_nodes = []
 
     while True:
         if frontier.isEmpty():
             return FAILURE
 
-        state, path, cost = frontier.pop() #Pop node (states and actions) that was added to the queue first
-        
-        if problem.isGoalState(state):
-            return path #Return solution
+        state, path, cost = frontier.pop() # Pop first-entered triplet
 
-        if state not in expanded_nodes:
-            expanded_nodes.append(state) #Add node to expanded nodes
-            for (next_state, action, step_cost) in problem.getSuccessors(state): 
+        if problem.isGoalState(state): # If goal is reached, return solution
+            return path
+
+        if state not in expanded_nodes: # Check if already expanded
+            expanded_nodes.append(state) # Add node to expanded nodes so it's not expanded again
+            for (next_state, action, step_cost) in problem.getSuccessors(state): # Iterate over successors, sometimes cost is taken into account
                 if (next_state, action, step_cost) not in frontier.list and next_state not in expanded_nodes:
-                    frontier.push((next_state, path + [action], cost+step_cost)) #Enqueue node to the end of the frontier queue
+                    frontier.push((next_state, path + [action], cost+step_cost)) # Enqueue successor into frontier
 
 
+# Snippets used in uniformCostSearch and aStarSearch
 def in_expanded(state, expanded_nodes):
-    '''Returns if state is in expanded_nodes'''
+    '''Returns True if state is in expanded_nodes, False otherwise'''
     for i in range(len(expanded_nodes)):
         if expanded_nodes[i][0] == state:
             return True
     return False
 
-
 def idx_in_frontier(state, frontier):
-    '''Returns IDX of state inside frontier if is in it. Otherwise return FAILURE'''
+    '''Returns index of state inside frontier if belongs to it. Otherwise return FAILURE'''
     for i in range(len(frontier.heap)):
         if frontier.heap[i][2][0] == state: 
             return i
@@ -154,37 +159,40 @@ def idx_in_frontier(state, frontier):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    
+    # Initialize frontier as a priority queue and add initial state
+    frontier = util.PriorityQueue()
+    frontier.push((problem.getStartState(), []), 0) # Each element of frontier is a pair of (state, path to position from start)
+
     expanded_nodes = [] 
-    #Initialise frontier with the initial state
-    frontier = util.PriorityQueue() #Frontier is a priority queue of nodes: states, actions and path-costs, that ended up in that state
-    frontier.push((problem.getStartState(), []), 0)
     
     while True:
         if frontier.isEmpty():
             return FAILURE
 
-        cost = frontier.heap[0][0] #Initialise cost with a heap data structure
-        state, path = frontier.pop() #Chooses the lowest-code node in frontier
+        cost = frontier.heap[0][0] # The cost of the first element in the frontier is stored in heap[0][0]
+        state, path = frontier.pop() # Pop the first element in the frontier (the one with lowest cost)
 
         if problem.isGoalState(state):
-            return path #Return solution
+            return path
 
         if state not in expanded_nodes:
-            expanded_nodes.append((state, path)) #Add node to expanded nodes
-            
+            expanded_nodes.append((state, path))
             for next_state, next_action, step_cost in problem.getSuccessors(state):
+                # Check if successors are already expanded or in frontier 
                 next_state_in_expanded = in_expanded(next_state, expanded_nodes)
-                idx = idx_in_frontier(next_state, frontier)    
+                idx = idx_in_frontier(next_state, frontier)
 
                 next_cost = cost + step_cost
 
                 # If the child state is not in frontier and not in the expanded node we add it to the frontier
                 if idx == FAILURE and not next_state_in_expanded:
                     frontier.push((next_state, path + [next_action]), next_cost)
-                # Else if the child state is in the frontier and has a higher path-cost we replace the frontier node with the child
+
+                # Else if the state is already in the frontier but with higher cost, we replace it
                 elif idx != FAILURE and frontier.heap[idx][0] > next_cost:
-                    frontier.heap.remove(frontier.heap[idx]) # Remove node idx from frontier
-                    frontier.push((next_state, path + [next_action]), next_cost) # Re-add node idx to modify path and cost of state if found a better path to it
+                    frontier.heap.remove(frontier.heap[idx]) # Remove node with higher cost (frontier.heap[idx]) from frontier
+                    frontier.push((next_state, path + [next_action]), next_cost) # Enqueue newer and cheaper node with same state
 
 
 def nullHeuristic(state, problem=None):
@@ -198,43 +206,41 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] 
-    #Initialise frontier with the initial state
-    frontier = util.PriorityQueue() #Frontier is a priority queue of nodes: states, actions and path-costs, that ended up in that state
-    frontier.push((problem.getStartState(), []), 0+heuristic(problem.getStartState(), problem))
-    # f(n) = g(n) + h(n) where:
-        # g(n) is the path cost from the start node to node n
-        # h(n) is the estimated cost of the cheapest path from n to the goal
-    # So f(n) is the estimated cost of the cheapest solution through n.
+
+    # VERY SIMILAR TO uniformCostSearch BUT NOW WE TAKE INTO ACCOUNT THE HEURISTIC
+    # The comments will remark the differences
+
+    frontier = util.PriorityQueue()
+    frontier.push((problem.getStartState(), []), heuristic(problem.getStartState(), problem)) # Add heuristic value of state to current cost
+
+    expanded_nodes = []
 
     while True:
         if frontier.isEmpty():
             return FAILURE
 
-        cost = frontier.heap[0][0] #Initialise cost with a heap data structure
-        state, path = frontier.pop() #Chooses the lowest-code node in frontier
-        
+        cost = frontier.heap[0][0]
+        state, path = frontier.pop()
+
         if problem.isGoalState(state):
-            return path #Return solution
+            return path
 
         if state not in expanded_nodes:
-            expanded_nodes.append((state, path)) #Add node to expanded nodes
-
+            expanded_nodes.append((state, path))
             for next_state, next_action, step_cost in problem.getSuccessors(state):
                 next_state_in_expanded = in_expanded(next_state, expanded_nodes)
                 idx = idx_in_frontier(next_state, frontier)
-                        
-                next_cost = cost + step_cost - heuristic(state, problem) + heuristic(next_state, problem) #Heuristics do not add up
-                # g(n): cost + step_cost -- that is cost from start to n
-                # h(n): heuristic(next_state, problem) -- cost from n to goal
 
-                # If the child state is not in frontier and not in the expanded node we add it to the frontier
+                # Now we take into account the heuristics: the value of the heuristic is updated (from parent to successor node)
+                # Heuristics do not add up, therefore we have to remove the last heuristic value
+                next_cost = cost + step_cost + heuristic(next_state, problem) - heuristic(state, problem)
+
                 if idx == FAILURE and not next_state_in_expanded:
                     frontier.push((next_state, path + [next_action]), next_cost)
-                # Else if the child state is in the frontier and has a higher path-cost we replace the frontier node with the child
+
                 elif idx != FAILURE and frontier.heap[idx][0] > next_cost:
-                    frontier.heap.remove(frontier.heap[idx]) # Remove node idx from frontier
-                    frontier.push((next_state, path + [next_action]), next_cost) # Re-add node idx to modify path and cost of state if found a better path to it
+                    frontier.heap.remove(frontier.heap[idx])
+                    frontier.push((next_state, path + [next_action]), next_cost)
 
 
 # Abbreviations
