@@ -528,18 +528,19 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
 
     if problem.isGoalState(state):
-        return 0 #Distance = 0
+        return 0
     
     foodPositions = foodGrid.asList() #List of food coordinates
     distFood = [] #Distance to unvisited corners
 
     for i in range(len(foodPositions)):
-        distFood.append((foodPositions[i], mazeDistance(position, foodPositions[i], problem.startingGameState))) #Append the unvisited corners and the distance to them
+        distFood.append((foodPositions[i], manhattan_distance(position, foodPositions[i]))) # Using mazeDistance is more time-consuming but has way too less expanded_nodes
+        # distFood.append((foodPositions[i], mazeDistance(position, foodPositions[i], problem.startingGameState))) # Using mazeDistance is more time-consuming but has way too less expanded_nodes (5/4)
+        # PD: using mazeDistance tricks the program to think it does not expand as many nodes but it expands waaaaay more nodes inside that function since it's basically creating a sub-search.
     distFood = sorted(distFood, key=lambda x:x[1], reverse=True) #Sort in descending order the distances 
     
     #Return maximum distance to reach corner
     return distFood[0][1] 
-
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -570,7 +571,28 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        return #######
+
+        # BASICALLY AN IMPLEMENTATION OF BFS TO SEARCH FOR THE FIRST UNEATED FOOD
+
+        FAILURE = -1
+        expanded_nodes = []
+        frontier = util.Queue()
+        frontier.push((startPosition, [], 0)) #Frontier is a queue (FIFO) of states and actions that ended up in that state
+
+        while True:
+            if frontier.isEmpty():
+                return FAILURE
+
+            state, path, cost = frontier.pop() #Pop node (states and actions) that was added to the queue first
+
+            if state in food.asList():
+                return path #Return solution
+
+            if state not in expanded_nodes:
+                expanded_nodes.append(state) #Add node to expanded nodes
+                for (next_state, action, step_cost) in problem.getSuccessors(state): 
+                    if (next_state, action, step_cost) not in frontier.list and next_state not in expanded_nodes:
+                        frontier.push((next_state, path + [action], cost+step_cost))
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
