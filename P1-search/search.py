@@ -114,9 +114,9 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    expanded_nodes = [] 
+    expanded_nodes = []
     #Initialise frontier with the initial state
-    frontier = util.Queue() 
+    frontier = util.Queue()
     frontier.push((problem.getStartState(), [], 0)) #Frontier is a queue (FIFO) of states and actions that ended up in that state
 
     while True:
@@ -130,8 +130,7 @@ def breadthFirstSearch(problem):
 
         if state not in expanded_nodes:
             expanded_nodes.append(state) #Add node to expanded nodes
-            successors = problem.getSuccessors(state)
-            for (next_state, action, step_cost) in successors: 
+            for (next_state, action, step_cost) in problem.getSuccessors(state): 
                 if (next_state, action, step_cost) not in frontier.list and next_state not in expanded_nodes:
                     frontier.push((next_state, path + [action], cost+step_cost)) #Enqueue node to the end of the frontier queue
 
