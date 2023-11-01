@@ -532,7 +532,7 @@ def foodHeuristic(state, problem):
 
     # PD: We have found answers in the internet that suggested using MST in the heuristic to solve this problem,
     # however we were not able to understand them fully. It would be great to have an explanation on how to do it.
-    # Is there any resource out there to understand the idea behind, prooving admissibility and consistency, etc?
+    # Is there any resource out there to understand the idea behind, proving admissibility and consistency, etc?
 
     return distFood
 
