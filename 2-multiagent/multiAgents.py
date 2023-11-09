@@ -18,10 +18,6 @@ import random, util
 
 from game import Agent
 
-def euclideanDistance(xy1, xy2):
-    "Returns the Manhattan distance between points xy1 and xy2"
-    return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
-
 class ReflexAgent(Agent):
     """
     A reflex agent chooses an action at each choice point by examining
@@ -79,46 +75,34 @@ class ReflexAgent(Agent):
 
         "*** YOUR CODE HERE ***"
 
-        currentPosition = currentGameState.getPacmanPosition()
         currentGhostPositions = currentGameState.getGhostPositions()
-        newGhostPositions = successorGameState.getGhostPositions()
-        newFoodPositions = newFood.asList()
+        currentFoodPositions = currentGameState.getFood().asList()
+        
         score = 0
-        weights = (10, 10)
-        foodReward = 0
         foodDistance = []
+        ghostDistance = []
 
-        for foodPos in newFoodPositions:
+        for foodPos in currentFoodPositions:
             foodDistance.append(manhattanDistance(foodPos, newPos))
 
-        mindistance = min(foodDistance)
+        minFoodDistance = min(foodDistance)
         
-        if mindistance == 0:
-            score += foodReward
-        else:
-            score -= mindistance
+        score -= minFoodDistance
 
-        # if newPos == currentPosition:
-        #     score -= 20
-
-        # for i in range(len(newScaredTimes)):
-        #     currentDistance = manhattanDistance(currentGhostPositions[i], currentPosition)
-        #     newDistance = manhattanDistance(newGhostPositions[i], newPos)
-
-        #     if newScaredTimes[i] > 0: # ghost i is scared
-        #         score -= (newDistance) * weights[0]
+        # IGNORING SCARED GHOSTS IS A BIT WORSE
+        # for i in range(len(currentGhostPositions)):
+        #     if newScaredTimes[i] <= 0:
+        #         ghostDistance.append(manhattanDistance(currentGhostPositions[i], newPos))
         #     else:
-        #         score += (newDistance) * weights[1]
-                
-        #         if newPos == newGhostPositions[i]:
-        #             score -= 1000
+        #         ghostDistance.append(4) # any greater than 3
 
-        # if mindistance == 0:
-        #     score += foodReward
-        # else:
-        #     score += foodReward / mindistance
-            
-        print(score)
+        for i in range(len(currentGhostPositions)):
+            ghostDistance.append(manhattanDistance(currentGhostPositions[i], newPos))
+        
+        minGhostDistance = min(ghostDistance)
+
+        if minGhostDistance < 3:
+            score -= 1000
 
         return score
 
@@ -182,7 +166,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         
-		# def min(): and def max():
+        # def min(): and def max():
 
 
 
@@ -203,7 +187,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
 
-		# def min(a, b): and def max(a, b):
+        # def min(a, b): and def max(a, b):
 
 
         util.raiseNotDefined()
