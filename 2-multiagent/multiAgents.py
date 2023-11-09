@@ -18,6 +18,10 @@ import random, util
 
 from game import Agent
 
+def euclideanDistance(xy1, xy2):
+    "Returns the Manhattan distance between points xy1 and xy2"
+    return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
+
 class ReflexAgent(Agent):
     """
     A reflex agent chooses an action at each choice point by examining
@@ -74,7 +78,49 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+
+        currentPosition = currentGameState.getPacmanPosition()
+        currentGhostPositions = currentGameState.getGhostPositions()
+        newGhostPositions = successorGameState.getGhostPositions()
+        newFoodPositions = newFood.asList()
+        score = 0
+        weights = (10, 10)
+        foodReward = 0
+        foodDistance = []
+
+        for foodPos in newFoodPositions:
+            foodDistance.append(manhattanDistance(foodPos, newPos))
+
+        mindistance = min(foodDistance)
+        
+        if mindistance == 0:
+            score += foodReward
+        else:
+            score -= mindistance
+
+        # if newPos == currentPosition:
+        #     score -= 20
+
+        # for i in range(len(newScaredTimes)):
+        #     currentDistance = manhattanDistance(currentGhostPositions[i], currentPosition)
+        #     newDistance = manhattanDistance(newGhostPositions[i], newPos)
+
+        #     if newScaredTimes[i] > 0: # ghost i is scared
+        #         score -= (newDistance) * weights[0]
+        #     else:
+        #         score += (newDistance) * weights[1]
+                
+        #         if newPos == newGhostPositions[i]:
+        #             score -= 1000
+
+        # if mindistance == 0:
+        #     score += foodReward
+        # else:
+        #     score += foodReward / mindistance
+            
+        print(score)
+
+        return score
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -135,6 +181,15 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
+        
+		# def min(): and def max():
+
+
+
+
+
+
+
         util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -147,6 +202,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+
+		# def min(a, b): and def max(a, b):
+
+
         util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
