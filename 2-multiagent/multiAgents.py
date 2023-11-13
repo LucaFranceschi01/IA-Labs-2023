@@ -202,11 +202,44 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-
         # def min(a, b): and def max(a, b):
+        def max_value(state, depth, alpha, beta):
+            if state.isWin() or state.isLose() or depth == self.depth:
+                return self.evaluationFunction(state)
+            
+            v = float('-inf')
+            for a in state.getLegalActions(0):
+                v = max(v, min_value(state.generateSuccessor(0, a), depth, 1, alpha, beta))
+                if v > beta:
+                    return v
+                alpha = max(alpha, v)
+            return v
+        
+        def min_value(state, depth, ghost_id, alpha, beta):
+            if state.isWin() or state.isLose() or depth == self.depth:
+                return self.evaluationFunction(state)
+            
+            v = float('inf')
+            for a in state.getLegalActions(ghost_id):
+                if ghost_id == state.getNumAgents() - 1:
+                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1, alpha, beta)) # if all ghosts are minimized, maximize pacman
+                else:
+                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1, alpha, beta)) # minimize all ghosts
+                if v < alpha:
+                    return v
+                beta = min(beta,v)
+            return v
+        
+        mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
+        alpha = float('-inf')
+        beta = float('inf')
+        for a in gameState.getLegalActions(0):
+            mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 0, 1, alpha, beta), a], key=lambda x:x[0])
+            alpha = max(alpha, min_value(gameState.generateSuccessor(0, a), 0, 1, alpha, beta)) ##### REVISE
+        return mylist[1]
 
 
-        util.raiseNotDefined()
+       
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
