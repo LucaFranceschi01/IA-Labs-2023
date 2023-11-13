@@ -166,15 +166,34 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         
-        # def min(): and def max():
+        def max_value(gameState, depth):
+            if gameState.isWin():
+                return self.evaluationFunction(gameState)
+            
+            if depth >= self.depth:
+                return self.evaluationFunction(gameState)
+            
+            v = float('-inf')
+            for a in gameState.getLegalActions(0):
+                v = max(v, min_value(gameState.generateSuccessor(0, a), depth+1))
+            return v
+        
+        def min_value(gameState, depth):
+            if gameState.isWin():
+                return self.evaluationFunction(gameState)
 
-
-
-
-
-
-
-        util.raiseNotDefined()
+            if depth >= self.depth:
+                return self.evaluationFunction(gameState)
+            
+            v = float('inf')
+            for a in gameState.getLegalActions(0):
+                v = min(v, max_value(gameState.generateSuccessor(0, a), depth+1))
+            return v
+        
+        mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
+        for a in gameState.getLegalActions(0):
+            mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 1), a], key=lambda x:x[0])
+        return mylist[1]
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
