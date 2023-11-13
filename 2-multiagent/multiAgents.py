@@ -166,33 +166,30 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         
-        def max_value(gameState, depth):
-            if gameState.isWin():
-                return self.evaluationFunction(gameState)
-            
-            if depth >= self.depth:
-                return self.evaluationFunction(gameState)
+        def max_value(state, depth):
+            if state.isWin() or state.isLose() or depth == self.depth:
+                return self.evaluationFunction(state)
             
             v = float('-inf')
-            for a in gameState.getLegalActions(0):
-                v = max(v, min_value(gameState.generateSuccessor(0, a), depth+1))
+            for a in state.getLegalActions(0):
+                v = max(v, min_value(state.generateSuccessor(0, a), depth, 1))
             return v
         
-        def min_value(gameState, depth):
-            if gameState.isWin():
-                return self.evaluationFunction(gameState)
-
-            if depth >= self.depth:
-                return self.evaluationFunction(gameState)
+        def min_value(state, depth, ghost_id):
+            if state.isWin() or state.isLose() or depth == self.depth:
+                return self.evaluationFunction(state)
             
             v = float('inf')
-            for a in gameState.getLegalActions(0):
-                v = min(v, max_value(gameState.generateSuccessor(0, a), depth+1))
+            for a in state.getLegalActions(ghost_id):
+                if ghost_id == state.getNumAgents() - 1:
+                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1)) # if all ghosts are minimized, maximize pacman
+                else:
+                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1)) # minimize all ghosts
             return v
         
         mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
         for a in gameState.getLegalActions(0):
-            mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 1), a], key=lambda x:x[0])
+            mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 0, 1), a], key=lambda x:x[0])
         return mylist[1]
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
