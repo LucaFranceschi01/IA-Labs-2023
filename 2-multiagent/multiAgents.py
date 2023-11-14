@@ -83,11 +83,11 @@ class ReflexAgent(Agent):
         ghostDistance = []
 
         for foodPos in currentFoodPositions:
-            foodDistance.append(manhattanDistance(foodPos, newPos))
+            foodDistance.append(manhattanDistance(foodPos, newPos)) #List of Manhattan distances between the foods and the succesor
 
-        minFoodDistance = min(foodDistance)
+        minFoodDistance = min(foodDistance) #Select the closest food
         
-        score -= minFoodDistance
+        score -= minFoodDistance 
 
         # IGNORING SCARED GHOSTS IS A BIT WORSE
         # for i in range(len(currentGhostPositions)):
@@ -97,11 +97,11 @@ class ReflexAgent(Agent):
         #         ghostDistance.append(4) # any greater than 3
 
         for i in range(len(currentGhostPositions)):
-            ghostDistance.append(manhattanDistance(currentGhostPositions[i], newPos))
+            ghostDistance.append(manhattanDistance(currentGhostPositions[i], newPos)) #List of Manhattan distances between the ghosts and the succesor
         
-        minGhostDistance = min(ghostDistance)
+        minGhostDistance = min(ghostDistance) #Select closest ghost
 
-        if minGhostDistance < 3:
+        if minGhostDistance < 3: #Loose huge score if Pacman is really close to a ghost
             score -= 1000
 
         return score
@@ -171,7 +171,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return self.evaluationFunction(state)
             
             v = float('-inf')
-            for a in state.getLegalActions(0):
+            #Compute for all legal actions of Pacman the maximum of the min_value of its successors
+            for a in state.getLegalActions(0): 
                 v = max(v, min_value(state.generateSuccessor(0, a), depth, 1))
             return v
         
@@ -180,17 +181,20 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return self.evaluationFunction(state)
             
             v = float('inf')
+            #Compute for all legal actions of Ghosts the minimum
             for a in state.getLegalActions(ghost_id):
                 if ghost_id == state.getNumAgents() - 1:
-                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1)) # if all ghosts are minimized, maximize pacman
+                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1)) #If all ghosts are minimized, maximize pacman
                 else:
-                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1)) # minimize all ghosts
+                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1)) #Otherwise, minimize all ghosts
             return v
         
         mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
+        #Compute for all legal actions of Pacman the maximum of the min_value of its sucessors and their actions
         for a in gameState.getLegalActions(0):
             mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 0, 1), a], key=lambda x:x[0])
-        return mylist[1]
+        return mylist[1] 
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -202,12 +206,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        # def min(a, b): and def max(a, b):
+
         def max_value(state, depth, alpha, beta):
             if state.isWin() or state.isLose() or depth == self.depth:
                 return self.evaluationFunction(state)
             
             v = float('-inf')
+            #Compute for all legal actions of Pacman the maximum of the min_value of its successors and update alpha
             for a in state.getLegalActions(0):
                 v = max(v, min_value(state.generateSuccessor(0, a), depth, 1, alpha, beta))
                 if v > beta:
@@ -220,11 +225,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 return self.evaluationFunction(state)
             
             v = float('inf')
+            #Compute for all legal actions of Ghosts the minimum and update beta
             for a in state.getLegalActions(ghost_id):
                 if ghost_id == state.getNumAgents() - 1:
-                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1, alpha, beta)) # if all ghosts are minimized, maximize pacman
+                    v = min(v, max_value(state.generateSuccessor(ghost_id, a), depth+1, alpha, beta)) #If all ghosts are minimized, maximize pacman
                 else:
-                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1, alpha, beta)) # minimize all ghosts
+                    v = min(v, min_value(state.generateSuccessor(ghost_id, a), depth, ghost_id+1, alpha, beta)) #Otherwise, minimize all ghosts
                 if v < alpha:
                     return v
                 beta = min(beta,v)
@@ -233,10 +239,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         alpha = float('-inf')
         beta = float('inf')
         mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
+        #Compute for all legal actions of Pacman the maximum of the min_value of its sucessors and their actions, and update the value of alpha
         for a in gameState.getLegalActions(0):
             mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 0, 1, alpha, beta), a], key=lambda x:x[0])
             alpha = max(alpha, mylist[0])
         return mylist[1]
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
