@@ -230,16 +230,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 beta = min(beta,v)
             return v
         
-        mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
         alpha = float('-inf')
         beta = float('inf')
+        mylist = [float('-inf'), gameState.getLegalActions(0)[0]] # arbitrary
         for a in gameState.getLegalActions(0):
             mylist = max(mylist, [min_value(gameState.generateSuccessor(0, a), 0, 1, alpha, beta), a], key=lambda x:x[0])
-            alpha = max(alpha, min_value(gameState.generateSuccessor(0, a), 0, 1, alpha, beta)) ##### REVISE
+            alpha = max(alpha, mylist[0])
         return mylist[1]
-
-
-       
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
