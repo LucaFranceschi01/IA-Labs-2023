@@ -25,37 +25,37 @@ def question2():
     return answerDiscount, answerNoise
 
 def question3a():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.2 # Does not see very far
+    answerNoise = 0.0 # No noise
+    answerLivingReward = 0.0 # Wants to finish ASAP
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.2 # Does not see very far
+    answerNoise = 0.2 # A little of noise
+    answerLivingReward = 0.0 # Wants to finish ASAP
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.9 # Does see quite far
+    answerNoise = 0.0 # No noise
+    answerLivingReward = 0.2 # Willing to spend some more time until arrive to terminal
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.9 # Does see quite far
+    answerNoise = 0.2 # A little of noise
+    answerLivingReward = 0.0 # Wants to finish ASAP
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.0 # Is blind
+    answerNoise = 0.0 # No noise 
+    answerLivingReward = 1.0 # Wants to live
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
