@@ -20,8 +20,8 @@
 # value iteration.
 
 def question2():
-    answerDiscount = 0.9
-    answerNoise = 0.01
+    answerDiscount = 0.9 #See far
+    answerNoise = 0.01 #Direct
     return answerDiscount, answerNoise
 
 # Prefer the close exit (+1), risking the cliff (-10)
@@ -53,7 +53,7 @@ def question3d():
     answerDiscount = 0.9 # Does see quite far
     answerNoise = 0.2 # A little of noise 
     "Why not willing to spend some more time like the previous one?"
-    answerLivingReward = 0.0 # Wants to finish ASAP
+    answerLivingReward = 0.2 # Willing to spend some more time until arrive to terminal
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
@@ -64,7 +64,7 @@ def question3e():
     answerLivingReward = 1.0 # Wants to live
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
-
+    
 
 def question8():
     answerEpsilon = None
