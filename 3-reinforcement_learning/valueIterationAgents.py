@@ -65,11 +65,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         
         for _ in range(self.iterations):
             new_values = self.values.copy()
-            for s in self.mdp.getStates():
-                if not self.mdp.isTerminal(s):
+            for s in self.mdp.getStates(): # Loop over all states
+                if not self.mdp.isTerminal(s): #If is terminal leave the predefined value 1 or -1
                     v_max = float('-inf')
                     for a in self.mdp.getPossibleActions(s):
-                        v_max = max(v_max, self.getQValue(s, a))
+                        v_max = max(v_max, self.getQValue(s, a)) #Compute maximum Q-value for each state and action
                     new_values[s] = v_max
             self.values = new_values
 
@@ -87,10 +87,13 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
+
+        #Cumulative sum of the possible next states (with their reward) of the current state and actions
         sum = 0.0
         for s_prime, p in self.mdp.getTransitionStatesAndProbs(state, action):
             sum += p*(self.mdp.getReward(state, action, s_prime) + self.discount*self.getValue(s_prime))
         return sum
+
 
     def computeActionFromValues(self, state):
         """
@@ -103,9 +106,10 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         "*** YOUR CODE HERE ***"
 
-        if self.mdp.isTerminal(state):
+        if self.mdp.isTerminal(state): #No legal actions
             return None
     
+        #Find the maximum value of the previously computed sum, so as to determine the action and next state with more benefit
         v_max = [float('-inf'), self.mdp.getPossibleActions(state)[0]] # arbitrary
         for a in self.mdp.getPossibleActions(state):
             v_max = max(v_max, [self.getQValue(state, a), a], key=lambda x:x[0])
